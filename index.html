@@ -1,0 +1,789 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Discover fashion, electronics and beauty at Benazir Enterprises Limited.">
+  <title>Benazir Enterprises Limited | Luxury Shopping</title>
+
+  <style>
+    :root {
+      --gold: #c8a45d;
+      --black: #171714;
+      --cream: #f8f5ee;
+      --white: #ffffff;
+      --muted: #77756f;
+      --border: #e6e0d5;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--cream);
+      color: var(--black);
+    }
+
+    button, input, select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .announcement {
+      padding: 10px;
+      text-align: center;
+      background: var(--gold);
+      color: var(--black);
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+
+    header {
+      background: var(--black);
+      color: white;
+      padding: 20px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      font-family: Georgia, serif;
+      font-size: 23px;
+      color: var(--gold);
+      font-weight: bold;
+    }
+
+    .brand small {
+      display: block;
+      font-family: Arial, sans-serif;
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-align: center;
+      margin-top: 6px;
+      color: white;
+    }
+
+    nav {
+      display: flex;
+      gap: 17px;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    nav a:hover {
+      color: var(--gold);
+    }
+
+    .hero {
+      min-height: 390px;
+      padding: 70px 7%;
+      display: flex;
+      align-items: center;
+      background:
+        linear-gradient(90deg, #171714 0%, #171714ee 42%, #17171444 100%),
+        url("https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1800&q=85")
+        center/cover;
+      color: white;
+    }
+
+    .hero-content {
+      max-width: 580px;
+    }
+
+    .eyebrow {
+      color: var(--gold);
+      letter-spacing: 4px;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-family: Georgia, serif;
+      font-size: clamp(38px, 6vw, 65px);
+      font-weight: normal;
+      line-height: 1.08;
+      margin: 20px 0;
+    }
+
+    .hero p {
+      color: #e1ded7;
+      line-height: 1.8;
+      max-width: 440px;
+    }
+
+    .gold-button {
+      background: var(--gold);
+      color: var(--black);
+      border: 1px solid var(--gold);
+      padding: 14px 23px;
+      font-weight: bold;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 15px;
+    }
+
+    .gold-button:hover {
+      background: #e2c786;
+    }
+
+    main {
+      padding: 45px 6%;
+    }
+
+    .section-heading {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .section-heading h2 {
+      font-family: Georgia, serif;
+      font-size: 34px;
+      font-weight: normal;
+      margin-bottom: 8px;
+    }
+
+    .section-heading p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 17px;
+      margin-bottom: 55px;
+    }
+
+    .category-card {
+      min-height: 155px;
+      padding: 25px;
+      text-align: left;
+      background: var(--black);
+      color: white;
+      border: 1px solid #37352f;
+      transition: transform .2s;
+    }
+
+    .category-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--gold);
+    }
+
+    .category-card span {
+      display: block;
+      color: var(--gold);
+      font-size: 12px;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+    }
+
+    .category-card strong {
+      font: normal 24px Georgia, serif;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin: 25px 0;
+    }
+
+    .toolbar input, .toolbar select {
+      padding: 13px;
+      border: 1px solid var(--border);
+      background: white;
+      min-width: 180px;
+      flex: 1;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .product {
+      background: white;
+      border: 1px solid var(--border);
+      padding-bottom: 17px;
+    }
+
+    .product img {
+      width: 100%;
+      height: 215px;
+      object-fit: cover;
+      background: #e9e3d8;
+    }
+
+    .product-info {
+      padding: 14px;
+    }
+
+    .product-category {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .product h3 {
+      font-size: 15px;
+      margin: 9px 0;
+    }
+
+    .price {
+      font-weight: bold;
+      color: #8a6b2d;
+      margin-bottom: 14px;
+    }
+
+    .product button, .dark-button {
+      width: 100%;
+      padding: 11px;
+      background: var(--black);
+      color: white;
+      border: none;
+    }
+
+    .product button:hover, .dark-button:hover {
+      background: #51442b;
+    }
+
+    .empty {
+      padding: 25px;
+      text-align: center;
+      color: var(--muted);
+      grid-column: 1 / -1;
+    }
+
+    .cart {
+      background: white;
+      padding: 25px;
+      border: 1px solid var(--border);
+      margin-top: 45px;
+    }
+
+    .cart h2, .payment h2 {
+      font-family: Georgia, serif;
+      font-weight: normal;
+    }
+
+    .cart-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cart-row button {
+      background: none;
+      color: #9b352b;
+      border: none;
+    }
+
+    .cart-total {
+      font-size: 21px;
+      font-weight: bold;
+      text-align: right;
+      margin: 22px 0;
+    }
+
+    .payment {
+      margin-top: 25px;
+      padding: 25px;
+      border: 1px solid var(--border);
+      background: white;
+      line-height: 1.8;
+    }
+
+    .payment p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    footer {
+      background: var(--black);
+      color: white;
+      padding: 35px 6%;
+      text-align: center;
+      line-height: 1.8;
+    }
+
+    footer span {
+      color: var(--gold);
+    }
+
+    @media (max-width: 850px) {
+      .product-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .category-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        min-height: 350px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header {
+        justify-content: center;
+      }
+
+      nav {
+        justify-content: center;
+      }
+
+      .product img {
+        height: 155px;
+      }
+
+      main {
+        padding: 32px 4%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="announcement">
+    BENAZIR ENTERPRISES LIMITED · QUALITY MEETS ELEGANCE
+  </div>
+
+  <header>
+    <div class="brand">
+      BENAZIR
+      <small>ENTERPRISES LIMITED</small>
+    </div>
+
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#categories">Categories</a>
+      <a href="#shop">Shop</a>
+      <a href="#cart">Cart (<span id="cart-count">0</span>)</a>
+    </nav>
+  </header>
+
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <div class="eyebrow">The art of refined shopping</div>
+      <h1>Luxury for every part of your life.</h1>
+      <p>
+        Explore fashion, electronics, beauty and personal care
+        in one carefully curated shopping destination.
+      </p>
+      <a class="gold-button" href="#shop">EXPLORE THE COLLECTION</a>
+    </div>
+  </section>
+
+  <main>
+    <section id="categories">
+      <div class="section-heading">
+        <h2>Shop by Category</h2>
+        <p>Discover something special for everyone.</p>
+      </div>
+
+      <div class="category-grid">
+        <button class="category-card" data-category="Clothing & Fashion">
+          <span>01 / STYLE</span>
+          <strong>Clothing & Fashion</strong>
+        </button>
+
+        <button class="category-card" data-category="Electronics">
+          <span>02 / INNOVATION</span>
+          <strong>Electronics</strong>
+        </button>
+
+        <button class="category-card" data-category="Beauty & Personal Care">
+          <span>03 / SELF-CARE</span>
+          <strong>Beauty & Personal Care</strong>
+        </button>
+      </div>
+    </section>
+
+    <section id="shop">
+      <div class="section-heading">
+        <h2>Our Collection</h2>
+        <p>Browse our demonstration products.</p>
+      </div>
+
+      <div class="toolbar">
+        <input
+          id="search"
+          type="search"
+          placeholder="Search products..."
+          aria-label="Search products"
+        >
+
+        <select id="category-filter" aria-label="Filter by category">
+          <option value="All">All categories</option>
+          <option value="Clothing & Fashion">Clothing & Fashion</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Beauty & Personal Care">Beauty & Personal Care</option>
+        </select>
+
+        <select id="audience-filter" aria-label="Filter by audience">
+          <option value="All">All audiences</option>
+          <option value="Men">Men</option>
+          <option value="Women">Women</option>
+          <option value="Unisex">Unisex</option>
+          <option value="Children">Children</option>
+        </select>
+      </div>
+
+      <div class="product-grid" id="products"></div>
+    </section>
+
+    <section class="cart" id="cart">
+      <h2>Your Shopping Bag</h2>
+      <div id="cart-items">
+        <p>Your shopping bag is empty.</p>
+      </div>
+
+      <div class="cart-total">
+        Total: <span id="cart-total">₦0</span>
+      </div>
+
+      <label for="customer-name">Your name</label>
+      <input id="customer-name" placeholder="Enter your name"
+        style="display:block;width:100%;padding:12px;margin:10px 0;border:1px solid #ddd;">
+
+      <label for="customer-address">Delivery address</label>
+      <input id="customer-address" placeholder="Enter your delivery address"
+        style="display:block;width:100%;padding:12px;margin:10px 0;border:1px solid #ddd;">
+
+      <button class="dark-button" id="order-button">
+        Order through WhatsApp
+      </button>
+    </section>
+
+    <section class="payment">
+      <h2>Bank Transfer Information</h2>
+      <p>
+        Bank transfer can be arranged when your order is confirmed.
+        Please request the official payment details from Benazir
+        Enterprises Limited through its verified contact channel.
+      </p>
+      <p>
+        Important: this demonstration website does not process
+        payments or automatically verify bank transfers.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="brand">BENAZIR</div>
+    <p>Fashion · Electronics · Beauty & Personal Care</p>
+    <span>Luxury in every detail.</span>
+    <p>© <span id="year"></span> Benazir Enterprises Limited</p>
+  </footer>
+
+  <script>
+    // DEMO PRODUCTS: replace these with your mum's real stock.
+    const products = [
+      {
+        id: 1,
+        name: "Classic Men's Shirt",
+        category: "Clothing & Fashion",
+        audience: "Men",
+        price: 18000,
+        image: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        id: 2,
+        name: "Elegant Women's Outfit",
+        category: "Clothing & Fashion",
+        audience: "Women",
+        price: 32000,
+        image: "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        id: 3,
+        name: "Everyday Unisex Sneakers",
+        category: "Clothing & Fashion",
+        audience: "Unisex",
+        price: 28000,
+        image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        id: 4,
+        name: "Children's Casual Wear",
+        category: "Clothing & Fashion",
+        audience: "Children",
+        price: 12000,
+        image: "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        id: 5,
+        name: "Wireless Headphones",
+        category: "Electronics",
+        audience: "Unisex",
+        price: 25000,
+        image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        id: 6,
+        name: "Smartphone",
+        category: "Electronics",
+        audience: "Unisex",
+        price: 185000,
+        image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        id: 7,
+        name: "Skincare Essentials",
+        category: "Beauty & Personal Care",
+        audience: "Women",
+        price: 15000,
+        image: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        id: 8,
+        name: "Men's Grooming Kit",
+        category: "Beauty & Personal Care",
+        audience: "Men",
+        price: 14000,
+        image: "https://images.unsplash.com/photo-1621607512214-68297480165e?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        id: 9,
+        name: "Children's Care Set",
+        category: "Beauty & Personal Care",
+        audience: "Children",
+        price: 9500,
+        image: "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=600&q=80"
+      }
+    ];
+
+    // Replace this with your mum's real WhatsApp number.
+    // Use country code and digits only, e.g. 2348012345678.
+    const WHATSAPP_NUMBER = "2348000000000";
+
+    const cart = [];
+    const money = amount =>
+      new Intl.NumberFormat("en-NG", {
+        style: "currency",
+        currency: "NGN",
+        maximumFractionDigits: 0
+      }).format(amount);
+
+    const productContainer = document.getElementById("products");
+    const searchInput = document.getElementById("search");
+    const categoryFilter = document.getElementById("category-filter");
+    const audienceFilter = document.getElementById("audience-filter");
+
+    function renderProducts() {
+      const term = searchInput.value.toLowerCase();
+      const category = categoryFilter.value;
+      const audience = audienceFilter.value;
+
+      const filtered = products.filter(product => {
+        const matchesSearch =
+          product.name.toLowerCase().includes(term) ||
+          product.category.toLowerCase().includes(term);
+
+        const matchesCategory =
+          category === "All" || product.category === category;
+
+        const matchesAudience =
+          audience === "All" || product.audience === audience;
+
+        return matchesSearch && matchesCategory && matchesAudience;
+      });
+
+      productContainer.innerHTML = "";
+
+      if (!filtered.length) {
+        productContainer.innerHTML =
+          '<p class="empty">No products found. Try another search.</p>';
+        return;
+      }
+
+      filtered.forEach(product => {
+        const card = document.createElement("article");
+        card.className = "product";
+
+        const image = document.createElement("img");
+        image.src = product.image;
+        image.alt = product.name;
+        image.loading = "lazy";
+        image.onerror = () => {
+          image.removeAttribute("src");
+          image.alt = "Product image unavailable";
+        };
+
+        const info = document.createElement("div");
+        info.className = "product-info";
+
+        const label = document.createElement("div");
+        label.className = "product-category";
+        label.textContent = product.category + " · " + product.audience;
+
+        const name = document.createElement("h3");
+        name.textContent = product.name;
+
+        const price = document.createElement("div");
+        price.className = "price";
+        price.textContent = money(product.price);
+
+        const button = document.createElement("button");
+        button.textContent = "Add to Bag";
+        button.addEventListener("click", () => addToCart(product.id));
+
+        info.append(label, name, price, button);
+        card.append(image, info);
+        productContainer.append(card);
+      });
+    }
+
+    function addToCart(id) {
+      const product = products.find(item => item.id === id);
+      const existing = cart.find(item => item.id === id);
+
+      if (existing) {
+        existing.quantity++;
+      } else {
+        cart.push({ ...product, quantity: 1 });
+      }
+
+      renderCart();
+    }
+
+    function removeFromCart(id) {
+      const index = cart.findIndex(item => item.id === id);
+
+      if (index !== -1) {
+        cart.splice(index, 1);
+      }
+
+      renderCart();
+    }
+
+    function renderCart() {
+      const container = document.getElementById("cart-items");
+      container.innerHTML = "";
+
+      if (cart.length === 0) {
+        container.textContent = "Your shopping bag is empty.";
+      }
+
+      cart.forEach(item => {
+        const row = document.createElement("div");
+        row.className = "cart-row";
+
+        const description = document.createElement("span");
+        description.textContent =
+          item.name + " × " + item.quantity + " — " +
+          money(item.price * item.quantity);
+
+        const remove = document.createElement("button");
+        remove.textContent = "Remove";
+        remove.addEventListener("click", () => removeFromCart(item.id));
+
+        row.append(description, remove);
+        container.append(row);
+      });
+
+      const totalQuantity = cart.reduce(
+        (sum, item) => sum + item.quantity, 0
+      );
+
+      const total = cart.reduce(
+        (sum, item) => sum + item.price * item.quantity, 0
+      );
+
+      document.getElementById("cart-count").textContent = totalQuantity;
+      document.getElementById("cart-total").textContent = money(total);
+    }
+
+    document.querySelectorAll(".category-card").forEach(button => {
+      button.addEventListener("click", () => {
+        categoryFilter.value = button.dataset.category;
+        audienceFilter.value = "All";
+        renderProducts();
+        document.getElementById("shop").scrollIntoView({
+          behavior: "smooth"
+        });
+      });
+    });
+
+    searchInput.addEventListener("input", renderProducts);
+    categoryFilter.addEventListener("change", renderProducts);
+    audienceFilter.addEventListener("change", renderProducts);
+
+    document.getElementById("order-button").addEventListener("click", () => {
+      if (!cart.length) {
+        alert("Please add a product to your shopping bag first.");
+        return;
+      }
+
+      const name = document.getElementById("customer-name").value.trim();
+      const address = document.getElementById("customer-address").value.trim();
+
+      if (!name || !address) {
+        alert("Please enter your name and delivery address.");
+        return;
+      }
+
+      if (!/^234\d{10}$/.test(WHATSAPP_NUMBER)) {
+        alert("The store's WhatsApp number has not been configured yet.");
+        return;
+      }
+
+      const total = cart.reduce(
+        (sum, item) => sum + item.price * item.quantity, 0
+      );
+
+      const lines = cart.map(item =>
+        `${item.name} x ${item.quantity} = ${money(item.price * item.quantity)}`
+      );
+
+      const message = [
+        "Hello Benazir Enterprises Limited!",
+        "",
+        "I would like to place an order.",
+        "Customer: " + name,
+        "Delivery address: " + address,
+        "",
+        ...lines,
+        "",
+        "Order total: " + money(total),
+        "",
+        "Please confirm availability, delivery cost and official bank transfer details before payment."
+      ].join("\n");
+
+      window.open(
+        "https://wa.me/" + WHATSAPP_NUMBER +
+        "?text=" + encodeURIComponent(message),
+        "_blank",
+        "noopener,noreferrer"
+      );
+    });
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    renderProducts();
+    renderCart();
+  </script>
+</body>
+</html>
