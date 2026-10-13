@@ -1,0 +1,352 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Benazir Enterprises | Admin</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: Arial, sans-serif;
+      background: #f3f5f4; color: #18342b;
+    }
+    header {
+      background: #123d2b; color: white;
+      padding: 18px; text-align: center;
+    }
+    main { max-width: 950px; margin: 24px auto; padding: 16px; }
+    .card {
+      background: white; padding: 20px; margin-bottom: 18px;
+      border-radius: 12px; box-shadow: 0 2px 10px #0000000d;
+    }
+    input, textarea, button, select {
+      width: 100%; padding: 12px; margin: 7px 0;
+      border: 1px solid #ccd5cf; border-radius: 7px;
+      font: inherit;
+    }
+    button { background: #176b45; color: white; border: 0; cursor: pointer; }
+    button.secondary { background: #52665b; }
+    button.danger { background: #a52a2a; }
+    .hidden { display: none; }
+    .item { border-top: 1px solid #ddd; padding: 12px 0; overflow-wrap: anywhere; }
+    .hint { color: #52665b; font-size: 14px; }
+    #message { white-space: pre-wrap; overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Benazir Enterprises</h1>
+  <p>Private Store Administration</p>
+</header>
+
+<main>
+  <section id="login" class="card">
+    <h2>Admin Login</h2>
+    <p class="hint">Sign in with the administrator account you created in Supabase.</p>
+    <form id="loginForm">
+      <input id="email" type="email" placeholder="Admin email" required autocomplete="username">
+      <input id="password" type="password" placeholder="Password" required autocomplete="current-password">
+      <button type="submit">Sign In</button>
+    </form>
+  </section>
+
+  <section id="dashboard" class="hidden">
+    <div class="card">
+      <h2>Dashboard</h2>
+      <button id="reload" type="button">Refresh Products and Orders</button>
+      <button id="logout" class="secondary" type="button">Log Out</button>
+      <p id="message" role="status"></p>
+    </div>
+
+    <div class="card">
+      <h2>Add a Product</h2>
+      <form id="productForm">
+        <input id="productName" placeholder="Product name" required>
+        <textarea id="productDescription" placeholder="Description"></textarea>
+        <input id="productPrice" type="number" min="0" step="0.01" placeholder="Price in naira" required>
+        <input id="productStock" type="number" min="0" step="1" placeholder="Stock quantity" value="0" required>
+        <input id="productImage" type="url" placeholder="Image URL (optional)">
+        <button type="submit">Add Product</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Products</h2>
+      <div id="products"></div>
+    </div>
+
+    <div class="card">
+      <h2>Customer Orders</h2>
+      <p class="hint">Only authorized administrators can access order records.</p>
+      <div id="orders"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+  // Replace these two placeholders with your Supabase project details.
+  const SUPABASE_URL = "https://xqimvbaxfpzchnshvtgx.supabase.co/rest/v1/";
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable__kVkmQHg3sPkZsucj4xuhw_MWpg6OMj";
+
+  const message = document.getElementById("message");
+  let db = null;
+
+  function say(text) {
+    message.textContent = text;
+  }
+
+  function showLogin() {
+    document.getElementById("login").classList.remove("hidden");
+    document.getElementById("dashboard").classList.add("hidden");
+  }
+
+  function showDashboard() {
+    document.getElementById("login").classList.add("hidden");
+    document.getElementById("dashboard").classList.remove("hidden");
+  }
+
+  function addText(parent, tag, text) {
+    const el = document.createElement(tag);
+    el.textContent = text == null ? "" : String(text);
+    parent.appendChild(el);
+    return el;
+  }
+
+  async function isAdmin(user) {
+    const { data, error } = await db
+      .from("admin_users")
+      .select("user_id")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (error) throw error;
+    return Boolean(data);
+  }
+
+  async function loadProducts() {
+    const container = document.getElementById("products");
+    container.replaceChildren();
+
+    const { data, error } = await db.from("products")
+      .select("id,name,description,price,stock,active")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    if (!data.length) {
+      addText(container, "p", "No products yet.");
+      return;
+    }
+
+    for (const p of data) {
+      const item = document.createElement("div");
+      item.className = "item";
+      addText(item, "h3", p.name);
+      addText(item, "p", "₦" + Number(p.price).toLocaleString("en-NG") +
+        " · Stock: " + p.stock + " · " + (p.active ? "Active" : "Hidden"));
+      addText(item, "p", p.description || "");
+
+      const edit = document.createElement("button");
+      edit.textContent = "Edit Product";
+      edit.onclick = async () => {
+        const name = prompt("Product name:", p.name);
+        if (name === null) return;
+        const price = prompt("Price in naira:", p.price);
+        if (price === null) return;
+        const stock = prompt("Stock quantity:", p.stock);
+        if (stock === null) return;
+
+        if (!name.trim() || !Number.isFinite(Number(price)) ||
+            Number(price) < 0 || !Number.isInteger(Number(stock)) ||
+            Number(stock) < 0) {
+          say("Enter a valid name, price, and whole-number stock quantity.");
+          return;
+        }
+
+        const { error } = await db.from("products").update({
+          name: name.trim(), price: Number(price), stock: Number(stock)
+        }).eq("id", p.id);
+
+        if (error) say("Update failed: " + error.message);
+        else { say("Product updated."); await loadProducts(); }
+      };
+      item.appendChild(edit);
+
+      const toggle = document.createElement("button");
+      toggle.className = "secondary";
+      toggle.textContent = p.active ? "Hide Product" : "Make Active";
+      toggle.onclick = async () => {
+        const { error } = await db.from("products")
+          .update({ active: !p.active }).eq("id", p.id);
+        if (error) say("Could not change product status: " + error.message);
+        else await loadProducts();
+      };
+      item.appendChild(toggle);
+
+      const remove = document.createElement("button");
+      remove.className = "danger";
+      remove.textContent = "Delete Product";
+      remove.onclick = async () => {
+        if (!confirm("Permanently delete " + p.name + "?")) return;
+        const { error } = await db.from("products").delete().eq("id", p.id);
+        if (error) say("Delete failed: " + error.message);
+        else { say("Product deleted."); await loadProducts(); }
+      };
+      item.appendChild(remove);
+      container.appendChild(item);
+    }
+  }
+
+  async function loadOrders() {
+    const container = document.getElementById("orders");
+    container.replaceChildren();
+
+    const { data, error } = await db.from("orders")
+      .select("id,customer_name,customer_phone,delivery_address,items,total,status,created_at")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    if (!data.length) {
+      addText(container, "p", "No orders found.");
+      return;
+    }
+
+    for (const o of data) {
+      const item = document.createElement("div");
+      item.className = "item";
+      addText(item, "h3", "Order #" + o.id + " — " + o.status);
+      addText(item, "p", "Customer: " + o.customer_name);
+      addText(item, "p", "Phone: " + o.customer_phone);
+      addText(item, "p", "Address: " + o.delivery_address);
+      addText(item, "p", "Total: ₦" + Number(o.total).toLocaleString("en-NG"));
+      addText(item, "p", "Items: " + JSON.stringify(o.items));
+      addText(item, "p", "Placed: " + new Date(o.created_at).toLocaleString());
+
+      const select = document.createElement("select");
+      for (const status of ["pending", "confirmed", "processing", "completed", "cancelled"]) {
+        const option = document.createElement("option");
+        option.value = status;
+        option.textContent = status;
+        option.selected = status === o.status;
+        select.appendChild(option);
+      }
+
+      const update = document.createElement("button");
+      update.textContent = "Update Order Status";
+      update.onclick = async () => {
+        const { error } = await db.from("orders")
+          .update({ status: select.value }).eq("id", o.id);
+        if (error) say("Order update failed: " + error.message);
+        else { say("Order status updated."); await loadOrders(); }
+      };
+      item.append(select, update);
+      container.appendChild(item);
+    }
+  }
+
+  async function refresh() {
+    try {
+      say("Loading store data...");
+      await loadProducts();
+      await loadOrders();
+      say("Store data loaded.");
+    } catch (error) {
+      say("Could not load data: " + error.message);
+    }
+  }
+
+  async function checkSession() {
+    try {
+      const { data: { session }, error } = await db.auth.getSession();
+      if (error) throw error;
+      if (!session) { showLogin(); return; }
+
+      if (!await isAdmin(session.user)) {
+        await db.auth.signOut();
+        showLogin();
+        say("This account is not authorized as an administrator.");
+        return;
+      }
+
+      showDashboard();
+      await refresh();
+    } catch (error) {
+      showLogin();
+      say("Authentication check failed: " + error.message);
+    }
+  }
+
+  if (!window.supabase ||
+      SUPABASE_URL === "YOUR_SUPABASE_PROJECT_URL" ||
+      SUPABASE_PUBLISHABLE_KEY === "YOUR_SUPABASE_PUBLISHABLE_KEY") {
+    showLogin();
+    say("Setup needed: add your Supabase Project URL and publishable key in this file.");
+  } else {
+    db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+    document.getElementById("loginForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      say("Signing in...");
+      const { data, error } = await db.auth.signInWithPassword({
+        email: document.getElementById("email").value.trim(),
+        password: document.getElementById("password").value
+      });
+
+      if (error) { say("Login failed: " + error.message); return; }
+
+      try {
+        if (!await isAdmin(data.user)) {
+          await db.auth.signOut();
+          say("This account is not authorized as an administrator.");
+          return;
+        }
+        showDashboard();
+        await refresh();
+      } catch (err) {
+        await db.auth.signOut();
+        showLogin();
+        say("Admin verification failed: " + err.message);
+      }
+    });
+
+    document.getElementById("productForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const product = {
+        name: document.getElementById("productName").value.trim(),
+        description: document.getElementById("productDescription").value.trim(),
+        price: Number(document.getElementById("productPrice").value),
+        stock: Number(document.getElementById("productStock").value),
+        image_url: document.getElementById("productImage").value.trim() || null
+      };
+
+      if (!product.name || !Number.isFinite(product.price) || product.price < 0 ||
+          !Number.isInteger(product.stock) || product.stock < 0) {
+        say("Please enter valid product details.");
+        return;
+      }
+
+      const { error } = await db.from("products").insert(product);
+      if (error) say("Could not add product: " + error.message);
+      else {
+        event.target.reset();
+        document.getElementById("productStock").value = "0";
+        say("Product added.");
+        await loadProducts();
+      }
+    });
+
+    document.getElementById("reload").addEventListener("click", refresh);
+    document.getElementById("logout").addEventListener("click", async () => {
+      await db.auth.signOut();
+      showLogin();
+      say("You have been logged out.");
+    });
+
+    checkSession();
+  }
+</script>
+</body>
+</html>
