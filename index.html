@@ -640,7 +640,7 @@
 
         const label = document.createElement("div");
         label.className = "product-category";
-        label.textContent = product.category + " · " + product.audience;
+        label.textContent = product.category || "General";
 
         const name = document.createElement("h3");
         name.textContent = product.name;
@@ -714,8 +714,30 @@
     });
 
     document.getElementById("year").textContent = new Date().getFullYear();
+    async function loadProducts() {
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .eq("active", true)
+    .order("created_at", { ascending: false });
 
+  if (error) {
+    console.error("Could not load products:", error);
     renderProducts();
+    return;
+  }
+
+  if (data && data.length > 0) {
+    products = data.map(product => ({
+      ...product,
+      image: product.image_url,
+      audience: "All"
+    }));
+  }
+
+  renderProducts();
+}
+    loadProducts();
     renderCart();
   </script>
 </body>
