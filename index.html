@@ -503,7 +503,7 @@
     const SUPABASE_URL = "https://xqimvbaxfpzchnshvtgx.supabase.co";
   const SUPABASE_PUBLISHABLE_KEY = "sb_publishable__kVkmQHg3sPkZsucj4xuhw_MWpg6OMj";
 
-    const products = [
+    let products = [
       {
         id: 1,
         name: "Classic Men's Shirt",
@@ -627,7 +627,7 @@
         card.className = "product";
 
         const image = document.createElement("img");
-        image.src = product.image;
+        image.src = product.image_url || product.image || "";
         image.alt = product.name;
         image.loading = "lazy";
         image.onerror = () => {
