@@ -668,8 +668,9 @@
       } else {
         cart.push({ ...product, quantity: 1 });
       }
+    }
 
-
+   function checkoutWhatsApp() {
       const name = document.getElementById("customer-name").value.trim();
       const address = document.getElementById("customer-address").value.trim();
 
@@ -710,7 +711,7 @@
         "?text=" + encodeURIComponent(message),
         "_blank",
         "noopener,noreferrer"
-      );
+      );}
       
     document.getElementById("year").textContent = new Date().getFullYear();
     async function loadProducts() {
