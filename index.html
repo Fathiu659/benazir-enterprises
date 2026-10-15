@@ -472,7 +472,7 @@
       <input id="customer-address" placeholder="Enter your delivery address"
         style="display:block;width:100%;padding:12px;margin:10px 0;border:1px solid #ddd;">
 
-      <button class="dark-button" id="order-button">
+      <button type="button" onclick="order-button">
         Order through WhatsApp
       </button>
     </section>
@@ -714,7 +714,7 @@
       }
 
       if (!/^234\d{10}$/.test(WHATSAPP_NUMBER)) {
-        alert("2348165685770.");
+        alert("The store's WhatApp number has not been configured yet.");
         return;
       }
 
@@ -740,12 +740,10 @@
         "Please confirm availability, delivery cost and official bank transfer details before payment."
       ].join("\n");
 
-      window.open(
-        "https://wa.me/" + WHATSAPP_NUMBER +
-        "?text=" + encodeURIComponent(message),
-        "_blank",
-        "noopener,noreferrer"
-      );}
+      window.location.href =
+  "https://wa.me/" + WHATSAPP_NUMBER +
+  "?text=" + encodeURIComponent(message);
+}
       
     document.getElementById("year").textContent = new Date().getFullYear();
     async function loadProducts() {
